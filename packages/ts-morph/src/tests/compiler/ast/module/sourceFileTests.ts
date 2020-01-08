@@ -1383,7 +1383,7 @@ function myFunction(param: MyClass) {
 
         it("should add missing imports when there are none", () => {
             const startText = "const t = new MyClass();\nconst u: MyInterface = {};";
-            const expectedText = `import MyClass from "./MyClass";\nimport { MyInterface } from "./MyInterface";\n\n${startText}`;
+            const expectedText = `import MyClass from "./MyClass";\nimport type { MyInterface } from "./MyInterface";\n\n${startText}`;
             doTest(startText, [
                 { path: "/MyClass.ts", text: "export default class MyClass {}" },
                 { path: "/MyInterface.ts", text: "export interface MyInterface {}" }
@@ -1392,7 +1392,7 @@ function myFunction(param: MyClass) {
 
         it("should add missing imports when there are none when using \r\n newlines", () => {
             const startText = "const t = new MyClass();\nconst u: MyInterface = {};";
-            const expectedText = `import MyClass from "./MyClass";\r\nimport { MyInterface } from "./MyInterface";\r\n\r\n${startText}`;
+            const expectedText = `import MyClass from "./MyClass";\r\nimport type { MyInterface } from "./MyInterface";\r\n\r\n${startText}`;
             doTest(startText, [
                 { path: "/MyClass.ts", text: "export default class MyClass {}" },
                 { path: "/MyInterface.ts", text: "export interface MyInterface {}" }
@@ -1403,7 +1403,7 @@ function myFunction(param: MyClass) {
 
         it("should add missing imports when some exist", () => {
             const startText = `import MyClass from "./MyClass";\n\nconst t = new MyClass();\nconst u: MyInterface = {};`;
-            const expectedText = `import MyClass from "./MyClass";\nimport { MyInterface } from "./MyInterface";\n\nconst t = new MyClass();\nconst u: MyInterface = {};`;
+            const expectedText = `import MyClass from "./MyClass";\nimport type { MyInterface } from "./MyInterface";\n\nconst t = new MyClass();\nconst u: MyInterface = {};`;
             doTest(startText, [
                 { path: "/MyClass.ts", text: "export default class MyClass {}" },
                 { path: "/MyInterface.ts", text: "export interface MyInterface {}" }
@@ -1421,7 +1421,7 @@ function myFunction(param: MyClass) {
 
         it("should add missing ones in existing named imports", () => {
             const startText = `import { MyClass } from "./MyClass";\n\nconst t = new MyClass();\nconst u: MyInterface = {};\nconst v = new MyClass2();\nconst w = new MyClass3()`;
-            const expectedText = `import { MyClass, MyClass2, MyClass3 } from "./MyClass";\nimport { MyInterface } from "./MyInterface";\n\nconst t = new MyClass();\n`
+            const expectedText = `import { MyClass, MyClass2, MyClass3 } from "./MyClass";\nimport type { MyInterface } from "./MyInterface";\n\nconst t = new MyClass();\n`
                 + `const u: MyInterface = {};\nconst v = new MyClass2();\nconst w = new MyClass3()`;
             doTest(startText, [
                 { path: "/MyClass.ts", text: "export class MyClass {} export class MyClass2 {} export class MyClass3 {}" },

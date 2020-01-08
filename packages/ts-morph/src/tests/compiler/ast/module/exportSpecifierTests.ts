@@ -98,7 +98,7 @@ describe(nameof(ExportSpecifier), () => {
     });
 
     describe(nameof<ExportSpecifier>(n => n.renameAlias), () => {
-        function doTest(text: string, newAlias: string, expected: string, expectedImportName: string) {
+        function doTest(text: string, newAlias: string, expected: string, expectedImportName: string, isNewAlias: boolean) {
             const { sourceFile, project } = getInfoFromText<ExportDeclaration>(text);
             const otherSourceFile = project.createSourceFile("file.ts", "export class name {}");
             const importingFile = project.createSourceFile("importingFile.ts", `import { name } from './testFile';`);
@@ -106,20 +106,25 @@ describe(nameof(ExportSpecifier), () => {
             namedImport.renameAlias(newAlias);
             expect(sourceFile.getText()).to.equal(expected);
             expect(importingFile.getImportDeclarations()[0].getNamedImports()[0].getName()).to.equal(expectedImportName);
-            expect(otherSourceFile.getText()).to.equal("export class name {}");
+            expect(otherSourceFile.getText()).to.equal(isNewAlias ? "export class newAlias {}" : "export class name {}");
         }
 
         it("should rename existing alias", () => {
             doTest("import {name as alias} from './file'; export { alias as name };", "newAlias",
-                "import {name as alias} from './file'; export { alias as newAlias };", "newAlias");
+                   "import {name as alias} from './file'; export { alias as newAlias };", "newAlias",
+                   false);
         });
 
         it("should add new alias and update all usages to the new alias", () => {
-            doTest("import {name} from './file'; export { name };", "newAlias", "import {name} from './file'; export { name as newAlias };", "newAlias");
+            doTest("import {name} from './file'; export { name };", "newAlias",
+                   "import {newAlias} from './file'; export { newAlias as newAlias };", "newAlias",
+                   true);
         });
 
         it("should remove and rename existing alias when specifying an empty string", () => {
-            doTest("import {name as alias} from './file'; export { alias as name };", "", "import {name as alias} from './file'; export { alias };", "alias");
+            doTest("import {name as alias} from './file'; export { alias as name };", "",
+                   "import {name as alias} from './file'; export { alias };", "alias",
+                   false);
         });
     });
 
